@@ -1,0 +1,28 @@
+# MODELS
+from enum import Enum
+class MODEL(Enum):
+    CLEAN_V1 = 0
+    MOBILEV2TOP_V1 = 1
+    
+target = MODEL.CLEAN_V1
+preprocess = True
+
+# INPUT INFO 
+SIZE_X = 224
+SIZE_Y = 224
+CHANNELS = 3
+IMG_SHAPE = (SIZE_X, SIZE_Y, CHANNELS)
+IMG_FORMATS = ('.jpg', '.png', '.jpeg', '.JPEG')
+
+# TRAIN SCRIPT
+BATCH_SIZE = 32
+EPOCHS = 15
+LR = 1e-6
+SHUFFLE_BUFFER_SIZE = 1000
+DEBUG_NET = False
+SHOW_PLOT = True
+
+TRAIN_TEST_SPLIT_SEED = 69
+TF_SEED = 69
+DATASET = 'AFDB'
+
