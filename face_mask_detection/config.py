@@ -3,9 +3,11 @@ from enum import Enum
 class MODEL(Enum):
     CLEAN_V1 = 0
     MOBILEV2TOP_V1 = 1
-    
-target = MODEL.CLEAN_V1
-preprocess = True
+    CLEAN_V2 = 2
+    CLEAN_V3 = 3
+
+target = MODEL.CLEAN_V3
+preprocess = False
 
 # INPUT INFO 
 SIZE_X = 224
@@ -16,13 +18,18 @@ IMG_FORMATS = ('.jpg', '.png', '.jpeg', '.JPEG')
 
 # TRAIN SCRIPT
 BATCH_SIZE = 32
-EPOCHS = 15
-LR = 1e-6
+EPOCHS = 300
+LR = 1e-7
 SHUFFLE_BUFFER_SIZE = 1000
-DEBUG_NET = False
+DEBUG_NET = True
 SHOW_PLOT = True
-
+LOG_DIR = 'logs'
 TRAIN_TEST_SPLIT_SEED = 69
 TF_SEED = 69
 DATASET = 'AFDB'
 
+# DETECTION SCRIPT
+MODEL_PATH = 'models'
+TEST_IMAGES_PATH = '../dataset/test_images'
+HEIGHT_THRESHOLD = 1
+WIDTH_THRESHOLD = 1

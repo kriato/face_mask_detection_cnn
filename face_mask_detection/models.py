@@ -8,14 +8,32 @@ from tensorflow.keras.layers import Conv2D, MaxPooling2D, GlobalAveragePooling2D
 from tensorflow.keras.layers import AveragePooling2D, Input
 from tensorflow.keras.applications import MobileNetV2
 from tensorflow.keras.models import Model
+from tensorflow.keras.models import load_model
 
 import config as cfg
 
-def get_model(which):
+def get_model_and_data(which):
     if which == cfg.MODEL.CLEAN_V1:
         return clean_v1()
     elif which == cfg.MODEL.MOBILEV2TOP_V1:
         return mobilev2top_v1()
+    if which == cfg.MODEL.CLEAN_V2:
+        return clean_v2()
+    if which == cfg.MODEL.CLEAN_V3:
+        return clean_v3()
+    else:
+        print(f'{which} not found')
+        return None
+
+def get_model(which):
+    if which == cfg.MODEL.CLEAN_V1:
+        return load_model(f'{cfg.MODEL_PATH}/{cfg.MODEL.CLEAN_V1}.model.weights.hdf5')
+    elif which == cfg.MODEL.MOBILEV2TOP_V1:
+        return load_model(f'{cfg.MODEL_PATH}/{cfg.MODEL.MOBILEV2TOP_V1}.model.weights.hdf5')
+    elif which == cfg.MODEL.CLEAN_V2:
+        return load_model(f'{cfg.MODEL_PATH}/{cfg.MODEL.CLEAN_V2}.model.weights.hdf5')
+    elif which == cfg.MODEL.CLEAN_V3:
+        return load_model(f'{cfg.MODEL_PATH}/{cfg.MODEL.CLEAN_V3}.model.weights.hdf5')
     else:
         print(f'{which} not found')
         return None
@@ -72,5 +90,83 @@ def mobilev2top_v1():
     # place the head FC model on top of the base model (this will become
     # the actual model we will train)
     model = Model(inputs=baseModel.input, outputs=headModel)
+
+    return model, data_mask, data_nomask
+
+# 79,481,793 FUNZIONA
+def clean_v2():
+    data_mask_path = '../dataset/AFDB/train_data_clean_model/2203_faces_with_mask_(224, 224, 3)_clean.npy'
+    data_no_mask_path = '../dataset/AFDB/train_data_clean_model/2203_faces_without_mask_(224, 224, 3)_clean.npy'
+    data_mask = np.load(data_mask_path) 
+    data_nomask = np.load(data_no_mask_path)
+
+    model=Sequential()
+    model.add(Input(shape=cfg.IMG_SHAPE))  # 224x224 RGB images
+
+    model.add(AveragePooling2D(pool_size=(2,2)))
+    model.add(Conv2D(64,(112,112), padding='same'))
+    model.add(Activation('relu'))
+    model.add(Dropout(0.3))
+
+    model.add(AveragePooling2D(pool_size=(2,2)))
+    model.add(Conv2D(128,(56,56), padding='same'))
+    model.add(Activation('relu'))
+    model.add(Dropout(0.3))
+
+    model.add(AveragePooling2D(pool_size=(2,2)))
+    model.add(Conv2D(256,(28,28), padding='same'))
+    model.add(Activation('relu'))
+    model.add(Dropout(0.3))
+
+    model.add(AveragePooling2D(pool_size=(2,2)))
+    model.add(Conv2D(512,(14,14), padding='same'))
+    model.add(Activation('relu'))
+    model.add(Dropout(0.5))
+
+    model.add(AveragePooling2D(pool_size=(7,7)))
+    model.add(Flatten())
+    model.add(Dropout(0.5))
+    model.add(Dense(1))
+
+    return model, data_mask, data_nomask
+
+
+def clean_v3():
+    data_mask_path = '../dataset/AFDB/train_data_clean_model/2203_faces_with_mask_(224, 224, 3)_clean.npy'
+    data_no_mask_path = '../dataset/AFDB/train_data_clean_model/2203_faces_without_mask_(224, 224, 3)_clean.npy'
+    data_mask = np.load(data_mask_path) 
+    data_nomask = np.load(data_no_mask_path)
+
+    model=Sequential()
+    model.add(Input(shape=cfg.IMG_SHAPE))  # 224x224 RGB images
+    
+    model.add(AveragePooling2D(pool_size=(2,2)))
+    model.add(Conv2D(32,(32,32), padding='same'))
+    model.add(Conv2D(32,(32,32), padding='same'))
+    model.add(Activation('relu'))
+    model.add(Dropout(0.3))
+
+    model.add(AveragePooling2D(pool_size=(2,2)))
+    model.add(Conv2D(64,(16,16), padding='same'))
+    model.add(Conv2D(64,(16,16), padding='same'))
+    model.add(Activation('relu'))
+    model.add(Dropout(0.3))
+
+    model.add(AveragePooling2D(pool_size=(2,2)))
+    model.add(Conv2D(128,(8,8), padding='same'))
+    model.add(Conv2D(128,(8,8), padding='same'))
+    model.add(Activation('relu'))
+    model.add(Dropout(0.3))
+
+    model.add(AveragePooling2D(pool_size=(2,2)))
+    model.add(Conv2D(256,(4,4), padding='same'))
+    model.add(Conv2D(256,(4,4), padding='same'))
+    model.add(Activation('relu'))
+    model.add(Dropout(0.3))
+
+    model.add(AveragePooling2D(pool_size=(7,7)))
+    model.add(Flatten())
+    model.add(Dropout(0.5))
+    model.add(Dense(1))
 
     return model, data_mask, data_nomask
