@@ -25,7 +25,9 @@ def mask_detect(img):
 
     # pass the blob through the network and obtain the face detections
     faces = detector.detect_faces(image)
-
+    if faces is None:
+        return
+        
     # loop over the detections
     for face in faces:
         print(face)
@@ -40,10 +42,10 @@ def mask_detect(img):
 
         # filter out weak detections by ensuring the confidence is
         # greater than the minimum confidence
-        if confidence > 0.75 and width >= cfg.WIDTH_THRESHOLD and height >= cfg.HEIGHT_THRESHOLD:
+        if confidence > 0.85 and width >= cfg.WIDTH_THRESHOLD and height >= cfg.HEIGHT_THRESHOLD:
             # extract the face ROI, convert it from BGR to RGB channel
             # ordering, resize it to 224x224, and preprocess it
-            face = image[startY:startY+height, startX:startX+width]
+            face = image[max(0,startY):startY+height, max(0,startX):startX+width]
             # face = cv2.cvtColor(face, cv2.COLOR_BGR2RGB)
             
             face = cv2.resize(face, (224, 224))

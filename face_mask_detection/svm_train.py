@@ -1,12 +1,9 @@
-# Implementare un classificatore SVM binario per distinguere le classi 6 e 9 del dataset MNIST
-# Valutare il classificatore calcolando la matrice di confusione, e da questa, calcolare accuracy, precision e recall.
-# Provare con un diverso numero di iterazioni e cambiando il kernel
-# Commentare i risultati
-
 # optimization finished, #iter = 2000
 # obj = -0.000009, rho = 3.813227
 # nSV = 712, nBSV = 0
 # Total nSV = 712
+
+# pylint: disable=no-member
 
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -20,10 +17,15 @@ data_no_mask_path = '../dataset/AFDB/train_data_clean_model/2203_faces_without_m
 data_mask = np.load(data_mask_path) 
 data_nomask = np.load(data_no_mask_path)
 
-data = np.concatenate((data_mask ,data_nomask), axis = 0)
+# data = np.concatenate((data_mask ,data_nomask), axis = 0)
 
-# CREATE LABELS
+# data = np.load('features.npy')
+# # CREATE LABELS
+# data = np.reshape(data, (data.shape[0], data.shape[1] * data.shape[2] * data.shape[3]))
+data = np.load('training_set_hog_features.npy')
 label = np.concatenate((np.ones(data_mask.shape[0]), np.zeros(data_nomask.shape[0])), axis = 0)
+data_mask = None
+data_nomask = None
 # SPLIT DATA INTO TRAINING AND VALIDATION AND CREATE TF DATASET
 
 # (x_train, x_test, y_train, y_test) = train_test_split(data, label, test_size=0.20, random_state=cfg.TRAIN_TEST_SPLIT_SEED)
@@ -57,5 +59,5 @@ model = SVC(kernel=kernel, max_iter=max_iteration, verbose=True)
 
 model.fit(data, label)
 
-with open('my_dumped_classifier.pkl', 'wb') as fid:
+with open(f'{cfg.MODEL_PATH}/svm_model.pkl', 'wb') as fid:
     pickle.dump(model, fid)
