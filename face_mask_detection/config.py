@@ -18,9 +18,9 @@ IMG_FORMATS = ('.jpg', '.png', '.jpeg', '.JPEG')
 
 # TRAIN SCRIPT
 BATCH_SIZE = 32
-EPOCHS = 300
+EPOCHS = 200
 LR = 1e-7
-SHUFFLE_BUFFER_SIZE = 1000
+SHUFFLE_BUFFER_SIZE = 5000
 DEBUG_NET = True
 SHOW_PLOT = True
 LOG_DIR = 'logs'
@@ -33,3 +33,6 @@ MODEL_PATH = 'models'
 TEST_IMAGES_PATH = '../dataset/test_images'
 HEIGHT_THRESHOLD = 1
 WIDTH_THRESHOLD = 1
+
+# TESTING SET
+TEST_PATH = '../dataset/testing_set'

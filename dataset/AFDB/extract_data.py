@@ -40,8 +40,9 @@ with open(f'{SUBFOLDER}/{FILENAME}.txt', 'w') as f:
     for i in range(N):
         img = load_img(matches[i], target_size=cfg.IMG_SHAPE)
         img = img_to_array(img)
-        if not cfg.preprocess:
+        if cfg.preprocess:
             img = preprocess_input(img)
+            print('here')
         data[i] = img
         name = matches[i].replace(os.getcwd() + "/AFDB_masked_face_dataset","")
         print(f'{i};{name}', file=f)
@@ -67,10 +68,35 @@ with open(f'{SUBFOLDER}/{FILENAME}.txt', 'w') as f:
     for i in range(N):
         img = load_img(matches[i], target_size=cfg.IMG_SHAPE)
         img = img_to_array(img)
-        if not cfg.preprocess:
+        if cfg.preprocess:
             img = preprocess_input(img)
+            print('here')
         data[i] = img
         name = matches[i].replace(os.getcwd() + "/AFDB_face_dataset","")
         print(f'{i};{name}', file=f)
 
 np.save(f'{SUBFOLDER}/{FILENAME}.npy', data)
+
+# WITHOUT MASK FOR TESTING
+# matches = []
+# files = []
+# for root, dirnames, filenames in os.walk(os.getcwd() + '/AFDB_face_dataset'):
+#     for filename in filenames:
+#         if filename.endswith(cfg.IMG_FORMATS):
+#             matches.append(os.path.join(root, filename))
+#             files.append(filename)
+#         else:
+#             print(filename)
+
+# N = 909
+# data = np.zeros((N,) + cfg.IMG_SHAPE)
+
+# for i in range(N):
+#     img = load_img(matches[i + 2500], target_size=cfg.IMG_SHAPE)
+#     img = img_to_array(img)
+#     if cfg.preprocess:
+#         img = preprocess_input(img)
+#         print('here')
+#     data[i] = img
+
+# np.save(f'testing_set_data_nomask.npy', data)
