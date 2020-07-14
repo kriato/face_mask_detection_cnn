@@ -1,13 +1,16 @@
 # pylint: disable=import-error, no-member
 
-import config as cfg
-import models
+import sys
+sys.path.append('../')
+from face_mask_detection import config as cfg
+from face_mask_detection import models
 
 import numpy as np
 import matplotlib.pyplot as plt
 
 from tensorflow.keras.activations import sigmoid
 from sklearn.metrics import plot_confusion_matrix, ConfusionMatrixDisplay, confusion_matrix
+from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 
 from tqdm import tqdm
 
@@ -28,6 +31,9 @@ model = models.get_model(cfg.target)
 # PREDICTION
 predictions = []
 for face in tqdm((test_data)):
+    if cfg.preprocess:
+        face = preprocess_input(face) 
+
     face = np.expand_dims(face, axis=0)
 
     logit = model.predict(face)
@@ -59,4 +65,5 @@ disp_norm = ConfusionMatrixDisplay(confusion_matrix=cm_norm,
                               display_labels=['mask', 'no mask'])
 
 disp_norm = disp_norm.plot(cmap=plt.cm.Blues)
+plt.savefig('cnn.png', dpi=300)
 plt.show()

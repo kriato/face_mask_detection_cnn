@@ -10,7 +10,7 @@ from tensorflow.keras.applications import MobileNetV2
 from tensorflow.keras.models import Model
 from tensorflow.keras.models import load_model
 
-import config as cfg
+from face_mask_detection import config as cfg
 
 def get_model_and_data(which):
     if which == cfg.MODEL.CLEAN_V1:
@@ -71,7 +71,7 @@ def mobilev2top_v1():
     data_mask = np.load(data_mask_path) 
     data_nomask = np.load(data_no_mask_path)
 
-    baseModel = MobileNetV2(weights="imagenet", include_top=False, input_tensor=Input(shape=(224, 224, 3)))
+    baseModel = MobileNetV2(weights="imagenet", include_top=False, input_shape=(cfg.IMG_SHAPE))
 
     # loop over all layers in the base model and freeze them so they will
     # *not* be updated during the first training process
@@ -82,7 +82,7 @@ def mobilev2top_v1():
     # the base model
     headModel = baseModel.output
     headModel = AveragePooling2D(pool_size=(7, 7))(headModel)
-    headModel = Flatten(name="flatten")(headModel)
+    headModel = Flatten()(headModel)
     headModel = Dense(128, activation="relu")(headModel)
     headModel = Dropout(0.5)(headModel)
     headModel = Dense(1)(headModel) #Dense 1 without activation
@@ -93,7 +93,6 @@ def mobilev2top_v1():
 
     return model, data_mask, data_nomask
 
-# 79,481,793 FUNZIONA
 def clean_v2():
     data_mask_path = '../dataset/AFDB/train_data_clean_model/2203_faces_with_mask_(224, 224, 3)_clean.npy'
     data_no_mask_path = '../dataset/AFDB/train_data_clean_model/2203_faces_without_mask_(224, 224, 3)_clean.npy'

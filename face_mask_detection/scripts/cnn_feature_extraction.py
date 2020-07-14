@@ -4,8 +4,10 @@ from tensorflow.keras.applications.resnet_v2 import ResNet50V2, preprocess_input
 from tensorflow.keras.preprocessing import image
 import numpy as np
 
-import config as cfg
-import models
+import sys
+sys.path.append('../')
+from face_mask_detection import config as cfg
+from face_mask_detection import models
 
 # LOAD TRAINING DATA
 # _, data_mask, data_nomask = models.get_model_and_data(cfg.target)

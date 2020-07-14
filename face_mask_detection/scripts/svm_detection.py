@@ -4,7 +4,10 @@ from mtcnn.mtcnn import MTCNN
 from cv2 import cv2
 import numpy as np
 
-import config as cfg
+import sys
+sys.path.append('../')
+from face_mask_detection import config as cfg
+
 import pickle
 
 with open(f'{cfg.MODEL_PATH}/svm_model.pkl', 'rb') as fid:

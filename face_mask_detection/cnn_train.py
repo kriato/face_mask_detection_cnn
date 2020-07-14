@@ -11,8 +11,8 @@ from tensorflow.keras.callbacks import ModelCheckpoint, TensorBoard
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.losses import BinaryCrossentropy
 
-import config as cfg
-import models
+from face_mask_detection import config as cfg
+from face_mask_detection import models
 
 # CREATE THE MODEL AND LOAD ITS DATA
 model, data_mask, data_nomask = models.get_model_and_data(cfg.target)
@@ -25,7 +25,7 @@ label = np.concatenate((np.ones(data_mask.shape[0]), np.zeros(data_nomask.shape[
 tf.random.set_seed(cfg.TF_SEED)
 np.random.seed(cfg.TF_SEED)
 
-(trainX, valX, trainY, valY) = train_test_split(data, label, test_size=0.20, random_state=cfg.TRAIN_TEST_SPLIT_SEED, stratify=True)
+(trainX, valX, trainY, valY) = train_test_split(data, label, test_size=0.20, random_state=cfg.TRAIN_TEST_SPLIT_SEED)
 train = tf.data.Dataset.from_tensor_slices((trainX, trainY))
 val = tf.data.Dataset.from_tensor_slices((valX, valY))
 train_dataset = train.repeat().shuffle(cfg.SHUFFLE_BUFFER_SIZE).batch(cfg.BATCH_SIZE)

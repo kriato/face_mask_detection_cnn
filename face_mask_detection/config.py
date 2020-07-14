@@ -18,8 +18,8 @@ IMG_FORMATS = ('.jpg', '.png', '.jpeg', '.JPEG')
 
 # TRAIN SCRIPT
 BATCH_SIZE = 32
-EPOCHS = 200
-LR = 1e-7
+EPOCHS = 60
+LR = 1e-6
 SHUFFLE_BUFFER_SIZE = 5000
 DEBUG_NET = True
 SHOW_PLOT = True

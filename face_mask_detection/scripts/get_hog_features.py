@@ -4,7 +4,10 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from matplotlib import pyplot as plt
 
-import config as cfg
+import sys
+sys.path.append('../')
+from face_mask_detection import config as cfg
+
 import pickle
 import cv2
 

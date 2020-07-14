@@ -5,18 +5,13 @@ import cv2
 import matplotlib.pyplot as plt
 from mtcnn.mtcnn import MTCNN
 
-import config as cfg
-import models
+import sys
+sys.path.append('../')
+from face_mask_detection import config as cfg
+from face_mask_detection import models
 
 from skimage import exposure
 from skimage import feature
- 
-# win_size = (224, 224)
-# block_size = (16, 16)
-# block_stride = (8, 8)
-# cell_size = (8, 8)
-# nbins = 9
-# hog = cv2.HOGDescriptor(win_size, block_size, block_stride, cell_size, nbins)
 
 def hog_extractor(img):
     detector = MTCNN()
@@ -49,6 +44,7 @@ def hog_extractor(img):
             # face = cv2.cvtColor(face, cv2.COLOR_BGR2RGB)
             
             face = cv2.resize(face, (224, 224))
+            rgb = face
             face = cv2.cvtColor(face, cv2.COLOR_RGB2GRAY)
 
             # H = feature.hog(face, orientations=9, pixels_per_cell=(8, 8),
@@ -61,9 +57,7 @@ def hog_extractor(img):
             hogImage = exposure.rescale_intensity(hogImage, out_range=(0, 255))
             hogImage = hogImage.astype("uint8")
             
-            print(H.shape)
-
-            cv2.imshow("HOG Image", hogImage)
+            cv2.imshow("HOG Image", np.hstack((cv2.cvtColor(rgb, cv2.COLOR_BGR2RGB), cv2.cvtColor(hogImage, cv2.COLOR_GRAY2RGB))))
             # hog_features = hog.compute(face)
             
             # print(hog_features.shape)

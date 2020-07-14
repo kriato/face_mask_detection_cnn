@@ -1,13 +1,15 @@
 # pylint: disable=import-error, no-member
 
-import config as cfg
-import models
+import sys
+sys.path.append('../')
+from face_mask_detection import config as cfg
+from face_mask_detection import models
 
 import numpy as np
 import matplotlib.pyplot as plt
 import pickle
 
-from sklearn.metrics import plot_confusion_matrix, ConfusionMatrixDisplay, confusion_matrix
+from sklearn.metrics import ConfusionMatrixDisplay, confusion_matrix
 
 from tqdm import tqdm
 
@@ -20,21 +22,20 @@ data_nomask = np.load(data_no_mask_path)
 test_labels = np.concatenate((np.ones(data_mask.shape[0]), np.zeros(data_nomask.shape[0])), axis = 0)
 data_mask = None
 data_nomask = None
-# test_data = np.load('testing_set_features.npy')
-test_data = np.load('testing_set_hog_features.npy')
+test_data = np.load('testing_set_features.npy')
+# test_data = np.load('testing_set_hog_features.npy')
 
 print(test_data.shape)
 print(test_labels.shape)
 
-with open(f'{cfg.MODEL_PATH}/svm_model.pkl', 'rb') as fid:
+with open(f'{cfg.MODEL_PATH}/svm_model_cnn_features.pkl', 'rb') as fid:
     model = pickle.load(fid)
 
 # PREDICTION
 predictions = []
 for face in tqdm((test_data)):
-    # face = np.reshape(face, (1, face.shape[0] * face.shape[1] * face.shape[2]))
-    # print(face.shape)
-    face = np.reshape(face, (1, face.shape[0]))
+    face = np.reshape(face, (1, face.shape[0] * face.shape[1] * face.shape[2]))
+    # face = np.reshape(face, (1, face.shape[0]))
     predicted = model.predict(face)
     if predicted > 0.5:
         predictions.append(1)
@@ -62,4 +63,5 @@ print('No_mask recall: ' + "{0:.2f}".format(recall_nomask))
 disp_norm = ConfusionMatrixDisplay(confusion_matrix=cm_norm, display_labels=['mask', 'no mask'])
 
 disp_norm = disp_norm.plot(cmap=plt.cm.Blues)
+plt.savefig('svm_cnn_cm.png', dpi=300)
 plt.show()

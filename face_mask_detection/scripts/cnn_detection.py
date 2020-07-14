@@ -1,5 +1,10 @@
 # pylint: disable=no-member
 
+import sys
+sys.path.append('../')
+from face_mask_detection import config as cfg
+from face_mask_detection import models
+
 from tensorflow.keras.preprocessing.image import img_to_array
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 from tensorflow.keras.activations import sigmoid
@@ -8,8 +13,8 @@ from mtcnn.mtcnn import MTCNN
 from cv2 import cv2
 import numpy as np
 
-import config as cfg
-import models
+# import config as cfg
+# import models
 
 model = models.get_model(cfg.target)
 
@@ -18,7 +23,7 @@ def mask_detect(img):
     image = cv2.imread(img)
   
     w, h, _ = image.shape
-    if w < 224 and h < 224:
+    if w < cfg.SIZE_Y and h < cfg.SIZE_Y:
         return
 
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -48,7 +53,7 @@ def mask_detect(img):
             face = image[max(0,startY):startY+height, max(0,startX):startX+width]
             # face = cv2.cvtColor(face, cv2.COLOR_BGR2RGB)
             
-            face = cv2.resize(face, (224, 224))
+            face = cv2.resize(face, (cfg.SIZE_X, cfg.SIZE_Y))
 
             face = img_to_array(face)
 
